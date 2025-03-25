@@ -1,21 +1,26 @@
-program laba4;
+﻿program laba4;
 
 {$APPTYPE CONSOLE}
 
 {$R *.res}
 
 uses
-  System.SysUtils;
+  System.SysUtils,
+  BasicFunction in '..\BasicFunction.pas';
 
 const
     N = 8;
 
 type
     Tdesk = array[1..N] of array[1..N] of integer;
+    TbaseArr = array of integer;
 
 var
     iter: integer = 0;
-    myDesk: Tdesk;    
+    myDesk: Tdesk;
+
+    M: integer;
+    myArr: TbaseArr;
 
 function isFree(desk: Tdesk; row, col: integer):boolean;
 var 
@@ -81,13 +86,44 @@ begin
   end;
 end;
 
-procedure BinominalCoificent();
+function BinominalCoificent(N: integer): TbaseArr;
+var
+  preArr, newArr: TbaseArr;
 begin
-
+  if (N = 0) then begin
+    SetLength(newArr, 1);
+    newArr[0]:= 1;
+    result:= newArr;
+  end
+  {else if (N = 1) then begin
+    SetLength(newArr, 2);
+    newArr[0]:= 1;
+    newArr[1]:= 1;
+    result:= newArr;
+  end}
+  else begin
+    preArr:= BinominalCoificent(N-1);
+    SetLength(newArr, length(preArr)+1);
+    newArr[0]:= 1;
+    newArr[length(newArr)-1]:= 1;
+    for var i := 1 to length(preArr)-1 do begin
+      newArr[i]:= preArr[i-1] + preArr[i];
+    end;
+    result:= newArr;
+  end;
 end;
 
 begin
   queen8(myDesk, 1);
+
+  writeln('Введите степень ');
+  M:= BasicFunction.ReadInt(0, 33);
+
+  myArr:= BinominalCoificent(M);
+  writeln;
+  for var i := Low(myArr) to High(myArr) do begin
+    write(myArr[i], ' ');
+  end;
 
   readln;
   readln;
